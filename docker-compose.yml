@@ -3,7 +3,8 @@ version: "3.2"
 services:
 #MariaDB Container
   mariadb:
-    image: mariadb:10.7
+    #image: mariadb:10.7
+    image: mariadb
     container_name: mariadb
     hostname: mariadb
     volumes:
@@ -14,15 +15,18 @@ services:
 
 #GLPI Container
   glpi:
-    image: diouxx/glpi
+    #image: diouxx/glpi
+    build: .
+    image: glpi
     container_name : glpi
     hostname: glpi
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - /var/www/html/glpi/:/var/www/html/glpi
+      - /var/www/html/:/var/www/html/
     environment:
-      - TIMEZONE=Europe/Brussels
+      - TIMEZONE=America/Recife
+      - ORG_PARAMS=/C=CO/ST=ST/L=LO/OU=OU/O=Company, Inc./CN=mydomain.com
     restart: always

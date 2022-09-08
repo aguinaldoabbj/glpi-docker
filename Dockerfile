@@ -1,31 +1,41 @@
-#On choisit une debian
-FROM debian:11.1
+#Base container
+#FROM debian:11.1
+FROM debian:stable-slim
 
-LABEL org.opencontainers.image.authors="github@diouxx.be"
+LABEL org.opencontainers.image.authors="aguinaldoabbj@github"
 
-
-#Ne pas poser de question à l'installation
+#Use Debian noninteractive mode
 ENV DEBIAN_FRONTEND noninteractive
 
-#Installation d'apache et de php7.4 avec extension
+# GLPI recommends to always use the latest available PHP, so let's add PHP8.x 3rd party repos
+RUN apt update && apt install --yes --no-install-recommends \
+ca-certificates \
+lsb-release \ 
+curl \
+gnupg \
+&& echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" \
+   | tee /etc/apt/sources.list.d/sury-php.list \
+&& curl -s https://packages.sury.org/php/apt.gpg | apt-key add -
+
+# Install GLPI dependencies
 RUN apt update \
 && apt install --yes --no-install-recommends \
 apache2 \
-php7.4 \
-php7.4-mysql \
-php7.4-ldap \
-php7.4-xmlrpc \
-php7.4-imap \
-curl \
-php7.4-curl \
-php7.4-gd \
-php7.4-mbstring \
-php7.4-xml \
-php7.4-apcu-bc \
+openssl \
+php8.2 \
+php8.2-mysql \
+php8.2-ldap \
+#php8.2-xmlrpc \ #not needed for php8
+php8.2-imap \
+php8.2-curl \
+php8.2-gd \
+php8.2-mbstring \
+php8.2-xml \
+# php8.2-apcu-bc \ #not needed for php8
 php-cas \
-php7.4-intl \
-php7.4-zip \
-php7.4-bz2 \
+php8.2-intl \
+php8.2-zip \
+php8.2-bz2 \
 cron \
 wget \
 ca-certificates \
@@ -37,10 +47,16 @@ libsasl2-modules \
 libsasl2-modules-db \
 && rm -rf /var/lib/apt/lists/*
 
-#Copie et execution du script pour l'installation et l'initialisation de GLPI
-COPY glpi-start.sh /opt/
-RUN chmod +x /opt/glpi-start.sh
-ENTRYPOINT ["/opt/glpi-start.sh"]
+#Copy scripts
+RUN mkdir /opt/scripts
+COPY *.sh /opt/scripts
+RUN chmod +x /opt/scripts/*
+
+#Copy default Apache2 conf
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+
+#RUN chmod +x /opt/glpi-install-start.sh
+ENTRYPOINT ["/opt/scripts/glpi-install-start.sh"]
 
 #Exposition des ports
-EXPOSE 80 443
+EXPOSE 443
