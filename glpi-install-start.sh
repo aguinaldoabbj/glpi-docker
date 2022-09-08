@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Generate self-signet certificates
 /opt/scripts/gen-selfsigned.sh
 
 # GLPI Repo Urls
@@ -25,7 +26,7 @@ GLPI_DIR=glpi
 GLPI_DIR_PREV="${GLPI_DIR}.prev"
 WEB_PATH=/var/www/html/
 
-#Ccheck if TLS_REQCERT is present
+#Check if TLS_REQCERT is present
 if !(grep -q "TLS_REQCERT" /etc/ldap/ldap.conf)
 then
 	echo "TLS_REQCERT isn't present"
