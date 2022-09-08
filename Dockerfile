@@ -55,7 +55,7 @@ RUN chmod +x /opt/scripts/*
 #Copy default Apache2 conf
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-#RUN chmod +x /opt/glpi-install-start.sh
+#Install GLPI on exec time and start app
 ENTRYPOINT ["/opt/scripts/glpi-install-start.sh"]
 
 #Exposition des ports
