@@ -49,7 +49,7 @@ libsasl2-modules-db \
 
 #Copy scripts
 RUN mkdir /opt/scripts
-COPY *.sh /opt/scripts
+COPY *.sh /opt/scripts/
 RUN chmod +x /opt/scripts/*
 
 #Copy default Apache2 conf
