@@ -16,6 +16,7 @@ services:
 #GLPI Container
   glpi:
     # image: diouxx/glpi
+    # image: aguinaldoabbj/glpi
     # build local image first
     build: .
     image: glpi
