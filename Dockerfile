@@ -23,19 +23,24 @@ RUN apt update \
 apache2 \
 openssl \
 php8.2 \
+php8.2-cli \
+php-json \
 php8.2-mysql \
 php8.2-ldap \
+php-ldap \
 #php8.2-xmlrpc \ #not needed for php8
 php8.2-imap \
 php8.2-curl \
 php8.2-gd \
 php8.2-mbstring \
 php8.2-xml \
-# php8.2-apcu-bc \ #not needed for php8
-php-cas \
 php8.2-intl \
 php8.2-zip \
 php8.2-bz2 \
+# php8.2-apcu-bc \ #not needed for php8
+php-cas \
+php-json \
+
 cron \
 wget \
 ca-certificates \
@@ -49,7 +54,7 @@ libsasl2-modules-db \
 
 #Copy scripts
 RUN mkdir /opt/scripts
-COPY *.sh /opt/scripts/
+COPY *.sh /opt/scripts
 RUN chmod +x /opt/scripts/*
 
 #Copy default Apache2 conf
@@ -58,5 +63,5 @@ COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 #Install GLPI on exec time and start app
 ENTRYPOINT ["/opt/scripts/glpi-install-start.sh"]
 
-#Expose HTTPS port
+#Exposition des ports
 EXPOSE 443
