@@ -7,7 +7,7 @@
 REPO_GLPI="https://api.github.com/repos/glpi-project/glpi/releases/tags/"
 LATEST_GLPI="https://api.github.com/repos/glpi-project/glpi/releases/latest"
 
-# GLPI Version control (Gets latest GLPI version)
+# GLPI Version control
 [[ ! "$VERSION_GLPI" ]] \
 	&& VERSION_GLPI=$(curl -s ${LATEST_GLPI} | grep tag_name | cut -d '"' -f 4)
 
@@ -18,18 +18,13 @@ echo "date.timezone = \"$TIMEZONE\"" > /etc/php/8.2/apache2/conf.d/timezone.ini;
 echo "date.timezone = \"$TIMEZONE\"" > /etc/php/8.2/cli/conf.d/timezone.ini;
 fi
 
-# SRC for download and TAR destination
 SRC_GLPI=$(curl -s ${REPO_GLPI}${VERSION_GLPI} | jq .assets[0].browser_download_url | tr -d \")
 TAR_GLPI=$(basename ${SRC_GLPI})
 
-# Apache2's workdir
-WEB_PATH=/var/www/html/
-
-# GLPI DIR
+# Work dirs
 GLPI_DIR=glpi
-
-# PREV GLPI DIR
 GLPI_DIR_PREV="${GLPI_DIR}.prev"
+WEB_PATH=/var/www/html/
 
 #Check if TLS_REQCERT is present
 if !(grep -q "TLS_REQCERT" /etc/ldap/ldap.conf)
@@ -53,8 +48,10 @@ if [ "$(ls ${WEB_PATH}${GLPI_DIR})" ]; then
         rm -Rf ${WEB_PATH}${TAR_GLPI}
         # Setting version flag
         echo "${VERSION_GLPI}" > ${WEB_PATH}${GLPI_DIR}/VERSION_GLPI
-        # Recovering glpicrypt.key from previous install if existent (need to recover data from previous installs)
+        # Recovering glpicrypt.key from previous install if existent (need to recover db data from previous installs)
         cp -fp ${WEB_PATH}${GLPI_DIR_PREV}/config/glpicrypt.key ${WEB_PATH}${GLPI_DIR}/config/
+        # Recovering user files from previous install
+        cp -rfp ${WEB_PATH}${GLPI_DIR_PREV}/files/* ${WEB_PATH}${GLPI_DIR}/files/
 	    chown -R www-data:www-data ${WEB_PATH}${GLPI_DIR}
     else
         echo "Same version of GLPI is already installed. Doing nothing."
@@ -81,5 +78,5 @@ service cron start
 # Apache module activation
 a2enmod rewrite && a2enmod ssl && service apache2 restart && service apache2 stop
 
-# Lauch of Apache2 for the container
+# Lauch of Apache2 for the conteiner
 /usr/sbin/apache2ctl -D FOREGROUND
