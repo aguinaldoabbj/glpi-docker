@@ -52,7 +52,11 @@ if [ "$(ls ${WEB_PATH}${GLPI_DIR})" ]; then
         cp -fp ${WEB_PATH}${GLPI_DIR_PREV}/config/glpicrypt.key ${WEB_PATH}${GLPI_DIR}/config/
         # Recovering user files from previous install
         cp -rfp ${WEB_PATH}${GLPI_DIR_PREV}/files/* ${WEB_PATH}${GLPI_DIR}/files/
+<<<<<<< HEAD
 	chown -R www-data:www-data ${WEB_PATH}${GLPI_DIR}
+=======
+	    chown -R www-data:www-data ${WEB_PATH}${GLPI_DIR}
+>>>>>>> 354fe4c (Fix backup of files)
     else
         echo "Same version of GLPI is already installed. Doing nothing."
     fi
