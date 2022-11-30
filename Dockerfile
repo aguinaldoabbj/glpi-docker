@@ -40,7 +40,6 @@ php8.2-bz2 \
 # php8.2-apcu-bc \ #not needed for php8
 php-cas \
 php-json \
-
 cron \
 wget \
 ca-certificates \
@@ -54,7 +53,7 @@ libsasl2-modules-db \
 
 #Copy scripts
 RUN mkdir /opt/scripts
-COPY *.sh /opt/scripts
+COPY *.sh /opt/scripts/
 RUN chmod +x /opt/scripts/*
 
 #Copy default Apache2 conf
